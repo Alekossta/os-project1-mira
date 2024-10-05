@@ -20,3 +20,4 @@
 
 ΄Ελεγχο συνδεσιμότητας γράφου και ανάδειξη ομάδων χρηστών.
 
+![image](https://github.com/user-attachments/assets/ea2da771-9e42-493a-83ef-9567c0407d5c)
