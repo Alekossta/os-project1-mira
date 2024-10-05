@@ -1,19 +1,35 @@
 CC = gcc
 CFLAGS = -Wall -g
-TARGET = miris
-OBJ = main.o helper.o
+TARGET = bin/miris
+SRC_DIR = src
+INC_DIR = include
+OBJ_DIR = obj
+BIN_DIR = bin
 
-$(TARGET): $(OBJ) 
+# Automatically detect all .c files in src folder
+SRC = $(wildcard $(SRC_DIR)/*.c)
+
+# Convert .c files to corresponding .o files in obj folder
+OBJ = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRC))
+
+# Target rule to build the final executable
+$(TARGET): $(OBJ)
+	@mkdir -p $(BIN_DIR)
 	$(CC) $(CFLAGS) -o $(TARGET) $(OBJ)
 
-helper.o: helper.c helper.h
-	$(CC) $(CFLAGS) -c helper.c
-main.o: main.c helper.h 
-	$(CC) $(CFLAGS) -c main.c
-clean:
-	rm -f $(OBJ) $(TARGET)
+# Rule for compiling .c files into .o files (for files that have .h)
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(INC_DIR)/%.h
+	@mkdir -p $(OBJ_DIR)
+	$(CC) $(CFLAGS) -I$(INC_DIR) -c $< -o $@
 
+# Special rule for compiling main.c (no .h file)
+$(OBJ_DIR)/main.o: $(SRC_DIR)/main.c
+	@mkdir -p $(OBJ_DIR)
+	$(CC) $(CFLAGS) -I$(INC_DIR) -c $< -o $@
+
+clean:
+	rm -rf $(OBJ_DIR) $(BIN_DIR)
 run:
-	make miris
+	make $(TARGET)
 	clear
-	./miris
+	./$(TARGET)

@@ -1,3 +1,4 @@
+#include "../include/prompt.h"
 #include "stdio.h"
 
 void printCommand(char* commandName, char* commandDescription, char* commandSyntax)
@@ -5,7 +6,7 @@ void printCommand(char* commandName, char* commandDescription, char* commandSynt
     printf("--- Command: %s ---\n", commandName);
     printf("Description: %s\n", commandDescription);
     printf("Syntax: %s\n", commandSyntax);
-}
+};
 
 void showPrompt()
 {
@@ -24,10 +25,4 @@ void showPrompt()
     printCommand("t", "find all transaction flows starting from node Ni with path length m", "t Ni m");
     printCommand("o", "find if there is a path between Ni and Nj and print it", "o Ni Nj");
     printCommand("e", "exit the program and save. show bytes used", "e");
-}
-
-int main()
-{
-    showPrompt();
-    return 0;
-}
+};

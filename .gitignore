@@ -1,2 +1,2 @@
-miris
-*.o
+bin/
+obj
