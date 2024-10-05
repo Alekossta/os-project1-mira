@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -Wall -g
-TARGET = mira
+TARGET = miris
 OBJ = main.o helper.o
 
 $(TARGET): $(OBJ) 
@@ -13,3 +13,7 @@ main.o: main.c helper.h
 clean:
 	rm -f $(OBJ) $(TARGET)
 
+run:
+	make miris
+	clear
+	./miris
