@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -Wall -g
-TARGET = build
+TARGET = mira
 OBJ = main.o helper.o
 
 $(TARGET): $(OBJ) 
