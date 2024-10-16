@@ -1,12 +1,16 @@
 #pragma once
 #include "NodeAccount.h"
-#include "Date.h"
 
 // will be used as a node in our linked list and will store the transaction data
-typedef struct Edge
+typedef struct EdgeTransaction
 {
-    struct NodeAccount* destinationNode;
-    struct Edge* next;
-    Date date;
+    struct NodeAccount* owner;
+    struct NodeAccount* destination;
+    struct EdgeTransaction* next;
+    char* date;
     double amount;
-} Edge;
+} EdgeTransaction;
+
+EdgeTransaction* edgeTransactionCreate(double amount, char* date,struct NodeAccount* owner,
+ struct NodeAccount* destination);
+void edgeTransactionFree(EdgeTransaction* edgeTransaction);

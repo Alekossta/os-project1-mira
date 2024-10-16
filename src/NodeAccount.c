@@ -1,7 +1,7 @@
 #include "NodeAccount.h"
 #include "string.h"
 
-NodeAccount* nodeCreate(char* name)
+NodeAccount* nodeAccountCreate(char* name)
 {
     NodeAccount* newNode = malloc(sizeof(NodeAccount));
 
@@ -13,12 +13,12 @@ NodeAccount* nodeCreate(char* name)
     return newNode;
 }
 
-void nodeFree(NodeAccount* node)
+void nodeAccountFree(NodeAccount* node)
 {
     free(node->name);
 }
 
-void nodePrint(NodeAccount* node)
+void nodeAccountPrint(NodeAccount* node)
 {
     printf("%s\n", node->name);
 }

@@ -32,9 +32,17 @@ void graphAddNode(Graph* graph, NodeAccount* newNode)
 
 void graphPrint(Graph* graph)
 {
-    for(unsigned i = 0; i < graph->nodeNum; i++)
+    for(unsigned i = 0; i < graph->nodeMax; i++)
     {
-        nodePrint(graph->nodeArray[i]);
+        if(graph->nodeArray[i] != NULL)
+        {
+            NodeAccount* head = graph->nodeArray[i];
+            while(head != NULL)
+            {
+                nodeAccountPrint(graph->nodeArray[i]);
+                head = head->nextNode;
+            }
+        }
     }
 }
 

@@ -10,6 +10,6 @@ typedef struct NodeAccount
     struct NodeAccount* nextNode; 
 } NodeAccount;
 
-NodeAccount* nodeCreate(char* name);
-void nodeFree(NodeAccount* node);
-void nodePrint(NodeAccount* node);
+NodeAccount* nodeAccountCreate(char* name);
+void nodeAccountFree(NodeAccount* node);
+void nodeAccountPrint(NodeAccount* node);

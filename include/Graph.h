@@ -19,6 +19,8 @@ void graphAddNode(Graph* graph, NodeAccount* newNode);
 // prints the nodes of the graph
 void graphPrint(Graph* graph);
 
+// finds a node. O(1). we use hash map
 NodeAccount* graphFindNode(char* nodeName);
 
-unsigned graphHash(char* key);
+// hash function. it receives a key (node name) and returns the index for our hashmap (array)
+unsigned graphHash(Graph* graph, char* key);
