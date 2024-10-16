@@ -6,9 +6,13 @@ void handleCommand(Graph* graph, Command* command)
     {
         for(unsigned i = 0; i < command->param_count; i++)
         {
-            Node* createdNode = nodeCreate(command->params[i]);
+            NodeAccount* createdNode = nodeCreate(command->params[i]);
             graphAddNode(graph, createdNode);
         }
+    }
+    else if(command->command == 'n')
+    {
+        
     }
     else if(command->command == 'p')
     {

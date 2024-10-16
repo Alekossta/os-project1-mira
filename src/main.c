@@ -1,11 +1,13 @@
-#include "../include/prompt.h"
+#include "../include/Prompt.h"
 #include "stdio.h"
-#include "Node.h"
 #include "Graph.h"
 #include "CommandHandler.h"
+
+#define NODE_MAX 1000
+
 int main()
 {
-    Graph graph = graphCreate();
+    Graph graph = graphCreate(NODE_MAX);
     Command command;
     do
     {

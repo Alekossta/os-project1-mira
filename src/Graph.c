@@ -1,28 +1,32 @@
 #include "Graph.h"
 #include "stdlib.h"
+#include "string.h"
 
-Graph graphCreate()
+Graph graphCreate(unsigned nodeMax)
 {
     Graph newGraph;
-    newGraph.nodeArray = NULL;
+    newGraph.nodeArray = malloc(sizeof(NodeAccount*) * nodeMax);
     newGraph.nodeNum = 0;
+    newGraph.nodeMax = nodeMax;
     return newGraph;
 }
 
-void graphAddNode(Graph* graph, Node* newNode)
+void graphAddNode(Graph* graph, NodeAccount* newNode)
 {
-    if(graph->nodeArray == NULL)
-    {
+    unsigned hashIndex = graphHash(graph, newNode->name);
 
-        graph->nodeArray = malloc(sizeof(Node*));
-        graph->nodeArray[0] = newNode;
-        graph->nodeNum++;
+    if(graph->nodeArray[hashIndex] == NULL)
+    {
+        graph->nodeArray[hashIndex] = newNode;
     }
     else
     {
-        graph->nodeNum++;
-        graph->nodeArray = realloc(graph->nodeArray, graph->nodeNum * sizeof(Node*));
-        graph->nodeArray[graph->nodeNum - 1] = newNode; 
+        NodeAccount* head = graph->nodeArray[hashIndex];
+        while(head->nextNode != NULL)
+        {
+            head = head->nextNode;
+        }
+        head->nextNode = newNode;
     }
 }
 
@@ -31,5 +35,34 @@ void graphPrint(Graph* graph)
     for(unsigned i = 0; i < graph->nodeNum; i++)
     {
         nodePrint(graph->nodeArray[i]);
+    }
+}
+
+unsigned graphHash(Graph* graph, char* key)
+{
+    unsigned hash = 5381;
+    char currentCharacter;
+
+    while((currentCharacter = *key++))
+    {
+        hash = ((hash << 5) + hash) + currentCharacter;
+    }
+
+    return hash % graph->nodeMax;
+}
+
+NodeAccount* graphFind(Graph* graph, char* nodeName)
+{
+    unsigned hashIndex = graphHash(graph,nodeName);
+
+    NodeAccount* head = graph->nodeArray[hashIndex];
+    while(head != NULL)
+    {
+        if(strcmp(head->name, nodeName) == 0)
+        {
+            return head;
+        }
+
+        head = head->nextNode;
     }
 }
