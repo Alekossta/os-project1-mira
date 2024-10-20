@@ -59,7 +59,7 @@ unsigned graphHash(Graph* graph, char* key)
     return hash % graph->nodeMax;
 }
 
-NodeAccount* graphFind(Graph* graph, char* nodeName)
+NodeAccount* graphFindNode(Graph* graph, char* nodeName)
 {
     unsigned hashIndex = graphHash(graph,nodeName);
 
@@ -72,5 +72,34 @@ NodeAccount* graphFind(Graph* graph, char* nodeName)
         }
 
         head = head->nextNode;
+    }
+
+    return NULL;
+}
+
+void graphRemoveNode(Graph* graph, char* nodeToRemove)
+{
+    unsigned hashIndex = graphHash(graph, nodeToRemove);
+    NodeAccount* currentNode =  graph->nodeArray[hashIndex];
+    NodeAccount* previousNode = NULL;
+
+    while (currentNode != NULL)
+    {
+        if(strcmp(currentNode->name, nodeToRemove) == 0)
+        {
+            if(previousNode == NULL)
+            {
+                graph->nodeArray[hashIndex] = currentNode->nextNode;
+            }
+            else
+            {
+                previousNode->nextNode = currentNode->nextNode;
+            }
+            nodeAccountFree(currentNode);
+            return;
+        }
+
+        previousNode = currentNode;
+        currentNode = currentNode->nextNode;
     }
 }

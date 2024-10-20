@@ -1,5 +1,6 @@
 #include "EdgeTransaction.h"
 #include "string.h"
+#include "stdio.h"
 
 EdgeTransaction* edgeTransactionCreate(double amount, char* date,NodeAccount* owner, NodeAccount* destination)
 {
@@ -19,4 +20,15 @@ void edgeTransactionFree(EdgeTransaction* edgeTransaction)
     free(edgeTransaction->date);
 
     // to be implemented
+}
+
+void edgeTransactionPrint(EdgeTransaction* edgeTransaction)
+{
+    if(edgeTransaction)
+    {
+        char* fromName = nodeGetName(edgeTransaction->owner);
+        char* toName = nodeGetName(edgeTransaction->destination);
+        printf("Transaction from %s to %s of amount %f at %s\n", fromName, toName,
+         edgeTransaction->amount, edgeTransaction->date);    
+    }
 }

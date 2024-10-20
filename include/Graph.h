@@ -20,7 +20,9 @@ void graphAddNode(Graph* graph, NodeAccount* newNode);
 void graphPrint(Graph* graph);
 
 // finds a node. O(1). we use hash map
-NodeAccount* graphFindNode(char* nodeName);
+NodeAccount* graphFindNode(Graph* graph, char* nodeName);
 
 // hash function. it receives a key (node name) and returns the index for our hashmap (array)
 unsigned graphHash(Graph* graph, char* key);
+
+void graphRemoveNode(Graph* graph, char* nodeToRemove);
