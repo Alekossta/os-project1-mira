@@ -12,21 +12,31 @@ typedef struct NodeAccount
 } NodeAccount;
 
 // memory management
+
 NodeAccount* nodeAccountCreate(char* name);
 void nodeAccountFree(NodeAccount* node);
 
-// print
+// prints
+
 void nodeAccountPrint(NodeAccount* node);
+void nodeAccountPrintInEdges(NodeAccount* node);
+void nodeAccountPrintOutEdges(NodeAccount* node);
 
 // add edges
+
 void nodeAccountAddOutEdge(NodeAccount* node, struct EdgeTransaction* newOutEdge);
 void nodeAccountAddInEdge(NodeAccount* node, struct EdgeTransaction* newOutEdge);
 
 // remove edges
+
 void nodeAccountRemoveAllOutEdges(NodeAccount* node);
 void nodeAccountRemoveAllInEdges(NodeAccount* node);
-void nodeAccountRemoveOutEdge(NodeAccount* node, EdgeTransaction* edgeTransaction);
-void nodeAccountRemoveInEdge(NodeAccount* node, EdgeTransaction* edgeTransaction);
+
+void nodeAccountRemoveEdgeWithOtherNode(NodeAccount* node1, NodeAccount* node2);
+
+void nodeAccountRemoveOutEdge(NodeAccount* node, struct EdgeTransaction* edgeTransaction);
+void nodeAccountRemoveInEdge(NodeAccount* nsode, struct EdgeTransaction* edgeTransaction);
 
 // getters
+
 char* nodeGetName(NodeAccount* node);

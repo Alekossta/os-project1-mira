@@ -7,7 +7,8 @@ EdgeTransaction* edgeTransactionCreate(double amount, char* date,NodeAccount* ow
     EdgeTransaction* newEdge = malloc(sizeof(EdgeTransaction));
 
     newEdge->destination = destination;
-    newEdge->next = NULL;
+    newEdge->nextIn = NULL;
+    newEdge->nextOut = NULL;
     newEdge->amount = amount;
     newEdge->owner = owner;
     newEdge->date = strdup(date);

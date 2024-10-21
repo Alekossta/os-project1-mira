@@ -46,9 +46,51 @@ void handleCommand(Graph* graph, Command* command)
     {
         for(unsigned i = 0; i < command->param_count; i++)
         {
-            printf("deleting command: %s", command->params[i]);
             graphRemoveNode(graph, command->params[i]);
         }
+    }
+    else if(command->command == 'l')
+    {
+        char* nodeFromName = command->params[0];
+        char* nodeToName = command->params[1];
+
+        NodeAccount* nodeFrom = graphFindNode(graph, nodeFromName);
+        NodeAccount* nodeTo  = graphFindNode(graph, nodeToName);
+
+        if(nodeFrom && nodeTo)
+        {
+            nodeAccountRemoveEdgeWithOtherNode(nodeFrom, nodeTo);
+        }
+        else
+        {
+            printf("The nodes you provided do not exist\n");
+        }
+    }
+    else if(command->command == 'f')
+    {
+        char* nodeNameToLook = command->params[0];
+        NodeAccount* nodeToLook = graphFindNode(graph, nodeNameToLook);
+        if(nodeToLook)
+        {
+            nodeAccountPrintOutEdges(nodeToLook);
+        }
+        else
+        {
+            printf("This node does not exist\n");
+        }
+    }
+    else if(command->command == 'r')
+    {
+        char* nodeNameToLook = command->params[0];
+        NodeAccount* nodeToLook = graphFindNode(graph, nodeNameToLook);
+        if(nodeToLook)
+        {
+            nodeAccountPrintInEdges(nodeToLook);
+        }
+        else
+        {
+            printf("This node does not exist\n");
+        }       
     }
     else if(command->command == 'p')
     {

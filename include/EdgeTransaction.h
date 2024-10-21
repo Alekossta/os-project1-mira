@@ -6,7 +6,8 @@ typedef struct EdgeTransaction
 {
     struct NodeAccount* owner;
     struct NodeAccount* destination;
-    struct EdgeTransaction* next;
+    struct EdgeTransaction* nextIn;
+    struct EdgeTransaction* nextOut;
     char* date;
     double amount;
 } EdgeTransaction;

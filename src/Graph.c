@@ -95,6 +95,8 @@ void graphRemoveNode(Graph* graph, char* nodeToRemove)
             {
                 previousNode->nextNode = currentNode->nextNode;
             }
+            nodeAccountRemoveAllInEdges(currentNode);
+            nodeAccountRemoveAllOutEdges(currentNode);
             nodeAccountFree(currentNode);
             return;
         }

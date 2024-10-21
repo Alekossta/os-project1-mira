@@ -22,23 +22,28 @@ void nodeAccountPrint(NodeAccount* node)
 {
     printf("###%s\n", node->name);
 
+    nodeAccountPrintInEdges(node);
+    nodeAccountPrintOutEdges(node);
+}
 
-    // print ingoing transactions
+void nodeAccountPrintInEdges(NodeAccount* node)
+{
     printf("##%s ingoing transactions\n", node->name);
     EdgeTransaction* headIn = node->firstInEdge;
     while (headIn != NULL)
     {
         edgeTransactionPrint(headIn);
-        headIn = headIn->next;
+        headIn = headIn->nextIn;
     }
-    
-    // print outgoing transactions
+}
+void nodeAccountPrintOutEdges(NodeAccount* node)
+{
     printf("##%s outgoing transactions\n", node->name);
     EdgeTransaction* headOut = node->firstOutEdge;
     while (headOut != NULL)
     {
         edgeTransactionPrint(headOut);
-        headOut = headOut->next;
+        headOut = headOut->nextOut;
     }
 }
 
@@ -51,12 +56,12 @@ void nodeAccountAddOutEdge(NodeAccount* node, EdgeTransaction* newOutEdge)
     else
     {
         EdgeTransaction* head = node->firstOutEdge;
-        while(head->next != NULL)
+        while(head->nextOut != NULL)
         {
-            head = head->next;
+            head = head->nextOut;
         }
 
-        head->next = newOutEdge;
+        head->nextOut = newOutEdge;
     }
 }
 
@@ -69,12 +74,12 @@ void nodeAccountAddInEdge(NodeAccount* node, EdgeTransaction* newInEdge)
     else
     {
         EdgeTransaction* head = node->firstInEdge;
-        while(head->next != NULL)
+        while(head->nextIn != NULL)
         {
-            head = head->next;
+            head = head->nextIn;
         }
 
-        head->next = newInEdge;
+        head->nextIn = newInEdge;
     }
 }
 
@@ -83,15 +88,121 @@ void nodeAccountRemoveAllOutEdges(NodeAccount* node)
     EdgeTransaction* head = node->firstOutEdge;
     while(head != NULL)
     {
-        nodeAccountRemoveInEdge(head->destination, head);
         EdgeTransaction* temp = head;
-        edgeTransactionFree(temp);
+        head = head->nextOut;
+        temp->owner = NULL;
+        if(temp->destination != NULL)
+        {
+            nodeAccountRemoveInEdge(temp->destination, temp);
+        }
     }
 }
 
 void nodeAccountRemoveAllInEdges(NodeAccount* node)
 {
+    EdgeTransaction* head = node->firstInEdge;
+    while(head != NULL)
+    {
+        EdgeTransaction* temp = head;
+        head = head->nextIn;
+        temp->destination = NULL;
+        if(temp->owner != NULL)
+        {
+            nodeAccountRemoveOutEdge(temp->owner, temp);
+        }
+    }
+}
 
+void nodeAccountRemoveEdgeWithOtherNode(NodeAccount* node1, NodeAccount* node2)
+{
+
+    // we will search in node1 edges in/out
+    // then just remove it also from node2
+
+
+    // in edges
+    EdgeTransaction* head = node1->firstInEdge;
+    EdgeTransaction* previous = NULL;
+    while(head != NULL)
+    {
+        if(strcmp(head->destination->name, node2->name) == 0)
+        {
+            // free will happen in node2
+            if(previous == NULL)
+            {
+                if(head->nextIn != NULL)
+                {
+                    node1->firstInEdge = head->nextIn;
+                }
+                else
+                {
+                    node1->firstInEdge = NULL;
+                }
+                
+                head->destination = NULL;
+                if(head->owner != NULL)
+                {
+                    nodeAccountRemoveOutEdge(node2, head);
+                }
+            }
+            else
+            {
+                previous->nextIn = head->nextIn;
+                head->destination = NULL;
+                if(head->owner != NULL)
+                {
+                    nodeAccountRemoveOutEdge(node2, head);
+                }
+            }
+
+            return;
+        }
+
+        previous = head;
+        head = head->nextIn;
+    }
+
+    // out edges
+    head = node1->firstOutEdge;
+    previous = NULL;
+    while(head != NULL)
+    {
+        if(strcmp(head->destination->name, node2->name) == 0)
+        {
+            // free will happen in node2
+            if(previous == NULL)
+            {
+                if(head->nextOut != NULL)
+                {
+                    node1->firstOutEdge = head->nextOut;
+                }
+                else
+                {
+                    node1->firstOutEdge = NULL;
+                }
+
+                head->owner = NULL;
+                if(head->destination != NULL)
+                {
+                    nodeAccountRemoveInEdge(node2, head);
+                }
+            }
+            else
+            {
+                previous->nextOut = head->nextOut;
+                head->owner = NULL;
+                if(head->destination != NULL)
+                {
+                    nodeAccountRemoveInEdge(node2, head);
+                }
+            }
+
+            return;
+        }
+
+        previous = head;
+        head = head->nextOut;
+    }
 }
 
 void nodeAccountRemoveOutEdge(NodeAccount* node, EdgeTransaction* edgeTransaction)
@@ -100,10 +211,18 @@ void nodeAccountRemoveOutEdge(NodeAccount* node, EdgeTransaction* edgeTransactio
     EdgeTransaction* previous = NULL;
     while(head != NULL)
     {
-        if(head == node)
+        if(head == edgeTransaction)
         {
             if(previous == NULL)
             {
+                if(head->nextOut != NULL)
+                {
+                    node->firstOutEdge = head->nextOut;
+                }
+                else
+                {
+                    node->firstOutEdge = NULL;
+                }
                 head->owner = NULL;
                 if(head->destination != NULL)
                 {
@@ -113,11 +232,11 @@ void nodeAccountRemoveOutEdge(NodeAccount* node, EdgeTransaction* edgeTransactio
                 {
                     edgeTransactionFree(head);
                 }
-                node->firstOutEdge = NULL;
+
             }
             else
             {
-                previous->next = head->next;
+                previous->nextOut = head->nextOut;
                 head->owner = NULL;
                 if(head->destination != NULL)
                 {
@@ -132,6 +251,9 @@ void nodeAccountRemoveOutEdge(NodeAccount* node, EdgeTransaction* edgeTransactio
 
             return;
         }
+
+        previous = head;
+        head = head->nextOut;
     }
 }
 
@@ -141,10 +263,18 @@ void nodeAccountRemoveInEdge(NodeAccount* node, EdgeTransaction* edgeTransaction
     EdgeTransaction* previous = NULL;
     while(head != NULL)
     {
-        if(head == node)
+        if(head == edgeTransaction)
         {
             if(previous == NULL)
             {
+                if(head->nextIn != NULL)
+                {
+                    node->firstInEdge = head->nextIn;
+                }
+                else
+                {
+                    node->firstInEdge = NULL;
+                }
                 head->destination = NULL;
                 if(head->owner != NULL)
                 {
@@ -154,11 +284,10 @@ void nodeAccountRemoveInEdge(NodeAccount* node, EdgeTransaction* edgeTransaction
                 {
                     edgeTransactionFree(head);
                 }
-                node->firstInEdge = NULL;
             }
             else
             {
-                previous->next = head->next;
+                previous->nextIn = head->nextIn;
                 head->destination = NULL;
                 if(head->owner != NULL)
                 {
@@ -168,11 +297,13 @@ void nodeAccountRemoveInEdge(NodeAccount* node, EdgeTransaction* edgeTransaction
                 {
                     edgeTransactionFree(head);
                 }
-
             }
 
             return;
         }
+
+        previous = head;
+        head = head->nextIn;
     }
 }
 
