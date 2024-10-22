@@ -10,3 +10,4 @@ typedef struct Command
 void printCommand(char* commandName, char* commandDescription, char* commandSyntax);
 void showPrompt();
 Command readCommand();
+void freeCommand(Command command);

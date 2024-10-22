@@ -307,6 +307,22 @@ void nodeAccountRemoveInEdge(NodeAccount* node, EdgeTransaction* edgeTransaction
     }
 }
 
+void nodeAccountFindAndModifyEdgeWithNode(NodeAccount* fromNode, NodeAccount* toNode, double oldSum,
+double newSum, char* oldDate, char* newDate)
+{
+    EdgeTransaction* head = fromNode->firstOutEdge;
+    while(head != NULL)
+    {
+        if(head->destination == toNode && head->amount == oldSum && strcmp(head->date, oldDate) == 0)
+        {
+            head->amount = newSum;
+            free(head->date);
+            head->date = strdup(newDate);
+        }
+        head = head->nextOut;
+    }
+}
+
 char* nodeGetName(NodeAccount* node)
 {
     if(node)

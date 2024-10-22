@@ -37,6 +37,11 @@ void nodeAccountRemoveEdgeWithOtherNode(NodeAccount* node1, NodeAccount* node2);
 void nodeAccountRemoveOutEdge(NodeAccount* node, struct EdgeTransaction* edgeTransaction);
 void nodeAccountRemoveInEdge(NodeAccount* nsode, struct EdgeTransaction* edgeTransaction);
 
+// modify edges
+
+void nodeAccountFindAndModifyEdgeWithNode(NodeAccount* fromNode, NodeAccount* toNode, double oldSum,
+double newSum, char* oldDate, char* newDate);
+
 // getters
 
 char* nodeGetName(NodeAccount* node);

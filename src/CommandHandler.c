@@ -15,6 +15,7 @@ void handleCommand(Graph* graph, Command* command)
     }
     else if(command->command == 'n')
     {
+        printf("nnnnn\n");
         char* nodeFromName = command->params[0];
         char* nodeToName = command->params[1];
 
@@ -65,6 +66,25 @@ void handleCommand(Graph* graph, Command* command)
         {
             printf("The nodes you provided do not exist\n");
         }
+    }
+    else if (command->command == 'm')
+    {
+        char* nodeFromName = command->params[0];
+        char* nodeToName = command->params[1];
+
+        double oldSum = strtod(command->params[2], NULL);
+        double newSum = strtod(command->params[3], NULL);
+
+        char* oldDate = command->params[4];
+        char* newDate = command->params[5];
+
+        NodeAccount* nodeFrom = graphFindNode(graph, nodeFromName);
+        NodeAccount* nodeTo  = graphFindNode(graph, nodeToName);
+
+        if(nodeFrom && nodeTo)
+        {
+            nodeAccountFindAndModifyEdgeWithNode(nodeFrom,nodeTo, oldSum, newSum, oldDate, newDate);
+        }        
     }
     else if(command->command == 'f')
     {
