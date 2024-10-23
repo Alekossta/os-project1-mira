@@ -2,7 +2,7 @@
 #include "string.h"
 #include "stdio.h"
 
-EdgeTransaction* edgeTransactionCreate(double amount, char* date,NodeAccount* owner, NodeAccount* destination)
+EdgeTransaction* edgeTransactionCreate(int amount, char* date,NodeAccount* owner, NodeAccount* destination)
 {
     EdgeTransaction* newEdge = malloc(sizeof(EdgeTransaction));
 
@@ -32,4 +32,9 @@ void edgeTransactionPrint(EdgeTransaction* edgeTransaction)
         printf("Transaction from %s to %s of amount %f at %s\n", fromName, toName,
          edgeTransaction->amount, edgeTransaction->date);    
     }
+}
+
+void intToString(int number, char *buffer) {
+    // Use sprintf to convert the int to a string
+    sprintf(buffer, "%d", number);
 }

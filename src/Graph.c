@@ -105,3 +105,25 @@ void graphRemoveNode(Graph* graph, char* nodeToRemove)
         currentNode = currentNode->nextNode;
     }
 }
+
+void graphWriteToFile(Graph* graph, FILE* file)
+{
+    for(unsigned i = 0; i < graph->nodeMax; i++)
+    {
+        if(graph->nodeArray[i] != NULL)
+        {
+            NodeAccount* headNode = graph->nodeArray[i];
+            while(headNode != NULL)
+            {
+                EdgeTransaction* headEdge = headNode->firstOutEdge;
+                while(headEdge != NULL)
+                {
+                    fprintf(file, "%s %s %d %s\n", headEdge->owner, headEdge->destination
+                    , headEdge->amount, headEdge->date);
+                }
+
+                headNode = headNode->nextNode;
+            }
+        }
+    }
+}

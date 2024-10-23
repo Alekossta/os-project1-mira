@@ -27,4 +27,4 @@ clean:
 run:
 	make $(TARGET)
 	clear
-	./$(TARGET) -i input/files/data8-3.txt -o defaultOutput.txt
+	./$(TARGET) -i input/files/data8-3.txt -o output/defaultOutput.txt

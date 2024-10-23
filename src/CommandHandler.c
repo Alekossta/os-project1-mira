@@ -20,7 +20,7 @@ void handleCommand(Graph* graph, Command* command)
         char* nodeToName = command->params[1];
 
         // second param of strtod() returns the character we stopped converting at. we dont really care so NULL
-        double amount = strtod(command->params[2], NULL);
+        int amount = atoi(command->params[2]);
 
         char* date  = command->params[3];
 
@@ -72,8 +72,8 @@ void handleCommand(Graph* graph, Command* command)
         char* nodeFromName = command->params[0];
         char* nodeToName = command->params[1];
 
-        double oldSum = strtod(command->params[2], NULL);
-        double newSum = strtod(command->params[3], NULL);
+        int oldSum = atoi(command->params[2]);
+        int newSum = atoi(command->params[3]);
 
         char* oldDate = command->params[4];
         char* newDate = command->params[5];

@@ -1,5 +1,6 @@
 #pragma once
 #include "NodeAccount.h"
+#include "stdio.h"
 
 // our graph will be an array of nodes
 // each node will have a linked list of edges that indicate its transactions to other accounts
@@ -26,3 +27,6 @@ NodeAccount* graphFindNode(Graph* graph, char* nodeName);
 unsigned graphHash(Graph* graph, char* key);
 
 void graphRemoveNode(Graph* graph, char* nodeToRemove);
+
+// writes contents of graph to file
+void graphWriteToFile(Graph* graph, FILE* file);

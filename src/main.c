@@ -14,26 +14,20 @@ int main(int argumentCount, char* arguments[])
 
     if(inputFile)
     {
-        printf("read\n");
         char nodeFrom[100];
         char nodeTo[100];
         char sum[100];
         char date[100];
 
-        printf("read2\n");
-
         while (fscanf(inputFile, "%99s %99s %99s %99s", nodeFrom, nodeTo, sum, date) == 4) {
-            printf("read3\n");
             // make a command
             Command command;
-            command.command = 'n';
             command.param_count = 4;
             command.params = malloc(sizeof(char*) * 4);
             command.params[0] = nodeFrom;
             command.params[1] = nodeTo;
             command.params[2] = sum;
             command.params[3] = date;
-            printf("h\n");
             handleCommand(&graph,&command);
             // we dont have to free command here because strings here are on static memory
         }
@@ -57,6 +51,19 @@ int main(int argumentCount, char* arguments[])
 
     // write file
 
-
+    // we will iterate through all nodes
+    // and get all the outgoing edge transactions
+    // and write all transactions like the input files
+    
+    FILE* outputFile = fopen(arguments[4], "w");
+    if(outputFile)
+    {
+        graphWriteToFile(&graph, outputFile);
+    }
+    else
+    {
+        printf("Error opening output file\n");
+    }
+    
     return 0;
 }
