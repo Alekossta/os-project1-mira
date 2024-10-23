@@ -30,3 +30,6 @@ void graphRemoveNode(Graph* graph, char* nodeToRemove);
 
 // writes contents of graph to file
 void graphWriteToFile(Graph* graph, FILE* file);
+
+//free
+void graphFree(Graph* graph); 

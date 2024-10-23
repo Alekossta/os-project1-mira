@@ -118,12 +118,40 @@ void graphWriteToFile(Graph* graph, FILE* file)
                 EdgeTransaction* headEdge = headNode->firstOutEdge;
                 while(headEdge != NULL)
                 {
-                    fprintf(file, "%s %s %d %s\n", headEdge->owner, headEdge->destination
+                    fprintf(file, "%s %s %d %s\n", headEdge->owner->name, headEdge->destination->name
                     , headEdge->amount, headEdge->date);
+                    headEdge = headEdge->nextOut;
                 }
 
                 headNode = headNode->nextNode;
             }
         }
     }
+}
+
+void graphFree(Graph* graph)
+{
+    for(unsigned i = 0; i < graph->nodeMax; i++)
+    {
+        if(graph->nodeArray[i] != NULL)
+        {
+            NodeAccount* headNode = graph->nodeArray[i];
+            while(headNode != NULL)
+            {
+                EdgeTransaction* headEdge = headNode->firstOutEdge;
+                while(headEdge != NULL)
+                {
+                    EdgeTransaction* temp = headEdge->nextOut;
+                    edgeTransactionFree(headEdge);
+                    headEdge = temp;
+                }
+
+                NodeAccount* tempNext = headNode->nextNode;
+                nodeAccountFree(headNode);
+                headNode = tempNext;
+            }
+        }
+    }
+
+    free(graph->nodeArray);
 }

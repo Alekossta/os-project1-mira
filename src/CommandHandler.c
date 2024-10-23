@@ -15,26 +15,24 @@ void handleCommand(Graph* graph, Command* command)
     }
     else if(command->command == 'n')
     {
-        printf("nnnnn\n");
         char* nodeFromName = command->params[0];
         char* nodeToName = command->params[1];
 
-        // second param of strtod() returns the character we stopped converting at. we dont really care so NULL
         int amount = atoi(command->params[2]);
-
+        
         char* date  = command->params[3];
 
         NodeAccount* nodeFrom = graphFindNode(graph, nodeFromName);
         if(!nodeFrom)
         {
-            nodeFrom = nodeAccountCreate(strdup(nodeFromName));
+            nodeFrom = nodeAccountCreate(nodeFromName);
             graphAddNode(graph, nodeFrom);
         }
 
         NodeAccount* nodeTo  = graphFindNode(graph, nodeToName);
         if(!nodeTo)
         {
-            nodeTo = nodeAccountCreate(strdup(nodeToName));
+            nodeTo = nodeAccountCreate(nodeToName);
             graphAddNode(graph, nodeTo);
         }
 

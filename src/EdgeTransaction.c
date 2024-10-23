@@ -19,8 +19,7 @@ EdgeTransaction* edgeTransactionCreate(int amount, char* date,NodeAccount* owner
 void edgeTransactionFree(EdgeTransaction* edgeTransaction)
 {
     free(edgeTransaction->date);
-
-    // to be implemented
+    free(edgeTransaction);
 }
 
 void edgeTransactionPrint(EdgeTransaction* edgeTransaction)
@@ -29,12 +28,7 @@ void edgeTransactionPrint(EdgeTransaction* edgeTransaction)
     {
         char* fromName = nodeGetName(edgeTransaction->owner);
         char* toName = nodeGetName(edgeTransaction->destination);
-        printf("Transaction from %s to %s of amount %f at %s\n", fromName, toName,
+        printf("Transaction from %s to %s of amount %d at %s\n", fromName, toName,
          edgeTransaction->amount, edgeTransaction->date);    
     }
-}
-
-void intToString(int number, char *buffer) {
-    // Use sprintf to convert the int to a string
-    sprintf(buffer, "%d", number);
 }

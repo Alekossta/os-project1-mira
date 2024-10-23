@@ -20,8 +20,8 @@ int main(int argumentCount, char* arguments[])
         char date[100];
 
         while (fscanf(inputFile, "%99s %99s %99s %99s", nodeFrom, nodeTo, sum, date) == 4) {
-            // make a command
             Command command;
+            command.command = 'n';
             command.param_count = 4;
             command.params = malloc(sizeof(char*) * 4);
             command.params[0] = nodeFrom;
@@ -29,7 +29,7 @@ int main(int argumentCount, char* arguments[])
             command.params[2] = sum;
             command.params[3] = date;
             handleCommand(&graph,&command);
-            // we dont have to free command here because strings here are on static memory
+            free(command.params);
         }
     }
     else
@@ -64,6 +64,10 @@ int main(int argumentCount, char* arguments[])
     {
         printf("Error opening output file\n");
     }
+
+    fclose(outputFile);
+
+    graphFree(&graph);
     
     return 0;
 }

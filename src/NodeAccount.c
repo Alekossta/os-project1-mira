@@ -16,6 +16,7 @@ NodeAccount* nodeAccountCreate(char* name)
 void nodeAccountFree(NodeAccount* node)
 {
     free(node->name);
+    free(node);
 }
 
 void nodeAccountPrint(NodeAccount* node)
