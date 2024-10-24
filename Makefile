@@ -30,4 +30,4 @@ run:
 	./$(TARGET) -i input/files/data8-3.txt -o output/defaultOutput.txt
 
 valgrind: $(TARGET)
-	valgrind --leak-check=full ./$(TARGET) -i input/files/data1000-25.txt -o output/defaultOutput.txt
+	valgrind --leak-check=full ./$(TARGET) -i input/files/data8-3.txt -o output/defaultOutput.txt

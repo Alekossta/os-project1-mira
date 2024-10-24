@@ -131,9 +131,52 @@ void graphWriteToFile(Graph* graph, FILE* file)
     }
 }
 
+int cycleUtil(Graph* graph, NodeAccount* node)
+{
+    EdgeTransaction* head = node->firstOutEdge;
+    while(head != NULL)
+    {
+        NodeAccount* neighbor = head->destination;
+        if(neighbor->visited == 0)
+        {
+            if(cycleUtil(graph,neighbor) == 1)
+            {
+                return 1;
+            }
+        }
+        else if(neighbor->stack == 1)
+        {
+            return 1;
+        }
+
+
+        head = head->nextOut;
+    }
+
+    node->stack = 0;
+    return 0;
+}
+
 void graphFindCircle(Graph* graph, NodeAccount* nodeToFind)
 {
-    
+    // set every node to unvisited from other searches
+    for(unsigned i = 0; i < graph->nodeMax; i++)
+    {
+        if(graph->nodeArray[i] != NULL)
+        {
+
+            NodeAccount* head = graph->nodeArray[i];
+            while(head != NULL)
+            {
+                head->visited = 0;
+                head->stack = 0;
+                head = head->nextNode;
+            }
+        }
+    }
+
+    int cycleResult = cycleUtil(graph,nodeToFind);
+    printf("Cycle result: %d", cycleResult);
 }
 
 void graphFree(Graph* graph)

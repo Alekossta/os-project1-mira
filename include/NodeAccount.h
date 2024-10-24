@@ -8,7 +8,11 @@ typedef struct NodeAccount
     struct EdgeTrasnaction* firstOutEdge;
     struct EdgeTransaction* firstInEdge;
     // used in the graph for hashing and seperate chaining
-    struct NodeAccount* nextNode; 
+    struct NodeAccount* nextNode;
+
+    // used for DFS
+    int visited;
+    int stack;
 } NodeAccount;
 
 // memory management

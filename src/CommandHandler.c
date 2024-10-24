@@ -116,7 +116,7 @@ void handleCommand(Graph* graph, Command* command)
         NodeAccount* nodeToLook = graphFindNode(graph, nodeName);
         if(nodeToLook)
         {
-            
+            graphFindCircle(graph, nodeToLook);
         }
         else
         {
