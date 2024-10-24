@@ -131,6 +131,11 @@ void graphWriteToFile(Graph* graph, FILE* file)
     }
 }
 
+void graphFindCircle(Graph* graph, NodeAccount* nodeToFind)
+{
+    
+}
+
 void graphFree(Graph* graph)
 {
     for(unsigned i = 0; i < graph->nodeMax; i++)

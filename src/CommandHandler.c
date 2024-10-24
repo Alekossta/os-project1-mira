@@ -110,6 +110,19 @@ void handleCommand(Graph* graph, Command* command)
             printf("This node does not exist\n");
         }       
     }
+    else if(command->command == 'c')
+    {
+        char* nodeName = command->params[0];
+        NodeAccount* nodeToLook = graphFindNode(graph, nodeName);
+        if(nodeToLook)
+        {
+            
+        }
+        else
+        {
+            printf("This node does not exist\n");
+        }
+    }
     else if(command->command == 'p')
     {
         graphPrint(graph);
