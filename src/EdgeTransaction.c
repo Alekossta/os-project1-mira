@@ -1,10 +1,12 @@
 #include "EdgeTransaction.h"
 #include "string.h"
 #include "stdio.h"
+#include "BytesCounter.h"
 
 EdgeTransaction* edgeTransactionCreate(int amount, char* date,NodeAccount* owner, NodeAccount* destination)
 {
     EdgeTransaction* newEdge = malloc(sizeof(EdgeTransaction));
+    bytesCounter += sizeof(EdgeTransaction);
 
     newEdge->destination = destination;
     newEdge->nextIn = NULL;

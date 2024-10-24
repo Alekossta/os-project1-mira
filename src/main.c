@@ -2,6 +2,7 @@
 #include "stdio.h"
 #include "Graph.h"
 #include "CommandHandler.h"
+#include "BytesCounter.h"
 
 #define NODE_MAX 19000
 
@@ -24,6 +25,7 @@ int main(int argumentCount, char* arguments[])
             command.command = 'n';
             command.param_count = 4;
             command.params = malloc(sizeof(char*) * 4);
+            bytesCounter += sizeof(char*) * 4;
             command.params[0] = nodeFrom;
             command.params[1] = nodeTo;
             command.params[2] = sum;
@@ -68,6 +70,8 @@ int main(int argumentCount, char* arguments[])
     fclose(outputFile);
 
     graphFree(&graph);
+
+    printf("Bytes used: %zu\n", bytesCounter);
     
     return 0;
 }

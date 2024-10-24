@@ -1,6 +1,7 @@
 #include "../include/Prompt.h"
 #include "stdio.h"
 #include <string.h>
+#include "BytesCounter.h"
 
 void printCommand(char* commandName, char* commandDescription, char* commandSyntax)
 {
@@ -57,6 +58,8 @@ Command readCommand()
             command.params = realloc(command.params, sizeof(char*) * (command.param_count + 1));
 
             command.params[command.param_count] = malloc(strlen(token) + 1);
+            bytesCounter += strlen(token) + 1;
+
             strcpy(command.params[command.param_count], token);
 
             command.param_count++;

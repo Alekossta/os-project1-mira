@@ -1,4 +1,3 @@
-Specification for miris command generated-output:
 In case of unrecognized command:
     ERROR INDICATION: "Unrecognized command"
 

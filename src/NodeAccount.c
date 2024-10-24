@@ -1,11 +1,14 @@
 #include "NodeAccount.h"
 #include "string.h"
+#include "BytesCounter.h"
 
 NodeAccount* nodeAccountCreate(char* name)
 {
     NodeAccount* newNode = malloc(sizeof(NodeAccount));
+    bytesCounter += sizeof(NodeAccount);
 
     newNode->name = malloc(strlen(name) + 1);
+    bytesCounter += sizeof(strlen(name) + 1);
     strcpy(newNode->name, name);
     
     newNode->firstOutEdge = NULL;

@@ -1,11 +1,13 @@
 #include "Graph.h"
 #include "stdlib.h"
 #include "string.h"
+#include "BytesCounter.h"
 
 Graph graphCreate(unsigned nodeMax)
 {
     Graph newGraph;
     newGraph.nodeArray = malloc(sizeof(NodeAccount*) * nodeMax);
+    bytesCounter += sizeof(NodeAccount*) * nodeMax;
     newGraph.nodeNum = 0;
     newGraph.nodeMax = nodeMax;
     return newGraph;
