@@ -14,13 +14,16 @@ EdgeTransaction* edgeTransactionCreate(int amount, char* date,NodeAccount* owner
     newEdge->amount = amount;
     newEdge->owner = owner;
     newEdge->date = strdup(date);
+    bytesCounter += strlen(date) + 1;
 
     return newEdge;
 }
 
 void edgeTransactionFree(EdgeTransaction* edgeTransaction)
 {
+    bytesCounter -= (strlen(edgeTransaction->date) + 1);
     free(edgeTransaction->date);
+    bytesCounter -= sizeof(EdgeTransaction);
     free(edgeTransaction);
 }
 

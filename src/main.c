@@ -25,12 +25,13 @@ int main(int argumentCount, char* arguments[])
             command.command = 'n';
             command.param_count = 4;
             command.params = malloc(sizeof(char*) * 4);
-            bytesCounter += sizeof(char*) * 4;
+            //bytesCounter += sizeof(char*) * 4;
             command.params[0] = nodeFrom;
             command.params[1] = nodeTo;
             command.params[2] = sum;
             command.params[3] = date;
             handleCommand(&graph,&command);
+            //bytesCounter -= sizeof(char*) * 4;
             free(command.params);
         }
     }

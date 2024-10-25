@@ -8,7 +8,7 @@ NodeAccount* nodeAccountCreate(char* name)
     bytesCounter += sizeof(NodeAccount);
 
     newNode->name = malloc(strlen(name) + 1);
-    bytesCounter += sizeof(strlen(name) + 1);
+    bytesCounter += strlen(name) + 1;
     strcpy(newNode->name, name);
     
     newNode->firstOutEdge = NULL;
@@ -18,7 +18,9 @@ NodeAccount* nodeAccountCreate(char* name)
 
 void nodeAccountFree(NodeAccount* node)
 {
+    bytesCounter -= strlen(node->name) + 1;
     free(node->name);
+    bytesCounter -= sizeof(NodeAccount);
     free(node);
 }
 
@@ -320,8 +322,10 @@ int newSum, char* oldDate, char* newDate)
         if(head->destination == toNode && head->amount == oldSum && strcmp(head->date, oldDate) == 0)
         {
             head->amount = newSum;
+            bytesCounter -= (strlen(head->date) + 1);
             free(head->date);
             head->date = strdup(newDate);
+            bytesCounter += strlen(newDate) + 1; // strdup uses malloc
         }
         head = head->nextOut;
     }

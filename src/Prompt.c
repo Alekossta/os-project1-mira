@@ -57,7 +57,7 @@ Command readCommand()
         {
             command.params = realloc(command.params, sizeof(char*) * (command.param_count + 1));
 
-            command.params[command.param_count] = malloc(strlen(token) + 1);
+            command.params[command.param_count] = malloc(strlen(token) + 1); // \0
             bytesCounter += strlen(token) + 1;
 
             strcpy(command.params[command.param_count], token);
@@ -72,7 +72,9 @@ Command readCommand()
 void freeCommand(Command command)
 {
     for(int i = 0; i < command.param_count; i++) {
+        bytesCounter -= (strlen(command.params[i]) + 1); // \0
         free(command.params[i]);
     }
+    bytesCounter -= sizeof(char*) * (command.param_count);
     free(command.params);
 }

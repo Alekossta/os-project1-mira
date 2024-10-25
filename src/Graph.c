@@ -6,6 +6,7 @@
 Graph graphCreate(unsigned nodeMax)
 {
     Graph newGraph;
+    printf("%d ending nodeMax", nodeMax);
     newGraph.nodeArray = malloc(sizeof(NodeAccount*) * nodeMax);
     bytesCounter += sizeof(NodeAccount*) * nodeMax;
     newGraph.nodeNum = 0;
@@ -202,6 +203,7 @@ void graphFree(Graph* graph)
             }
         }
     }
-
+    
+    bytesCounter -= (sizeof(NodeAccount*) * (graph->nodeMax));
     free(graph->nodeArray);
 }
