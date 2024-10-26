@@ -22,8 +22,8 @@ void showPrompt()
     printCommand("f", "show all outgoing edge transactions of a node Ni", "f Ni");
     printCommand("r", "show all ingoing edge transactions of a node Ni", "r Ni");
     printCommand("c", "find if node Ni is in a simple circle and show that.", "c Ni");
-    printCommand("f", "find if node Ni is in a circular transaction. min sum every edge should have is k",
-    "f Ni k");
+    printCommand("y", "find if node Ni is in a circular transaction. min sum every edge should have is k",
+    "y Ni k");
     printCommand("t", "find all transaction flows starting from node Ni with path length m", "t Ni m");
     printCommand("o", "find if there is a path between Ni and Nj and print it", "o Ni Nj");
     printCommand("e", "exit the program and save. show bytes used", "e");
@@ -43,7 +43,7 @@ Command readCommand()
     char* token = strtok(input, " ");
     if(token != NULL)
     {
-        command.command = token[0];
+        command.command = token;
     }
     else
     {
@@ -56,6 +56,7 @@ Command readCommand()
         if(token)
         {
             command.params = realloc(command.params, sizeof(char*) * (command.param_count + 1));
+            bytesCounter += sizeof(char*);
 
             command.params[command.param_count] = malloc(strlen(token) + 1); // \0
             bytesCounter += strlen(token) + 1;

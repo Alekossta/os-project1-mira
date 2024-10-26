@@ -10,6 +10,31 @@ int main(int argumentCount, char* arguments[])
 {
     Graph graph = graphCreate(NODE_MAX);
 
+    char* inputFileName = NULL;
+    char* outputFileName = NULL;
+
+    for (int i = 1; i < argumentCount; i++) {
+        if (strcmp(arguments[i], "-i") == 0) {
+            if (i + 1 < argumentCount) {
+                inputFileName = arguments[i + 1];
+                i++;
+            } else {
+                printf("Error: Missing value for -i option\n");
+                return 1;
+            }
+        } else if (strcmp(arguments[i], "-o") == 0) {
+            if (i + 1 < argumentCount) {
+                outputFileName = arguments[i + 1];
+                i++;
+            } else {
+                printf("Error: Missing value for -o option\n");
+                return 1;
+            }
+        } else {
+            printf("Unknown argument: %s\n", arguments[i]);
+        }
+    }
+
     // read file
     FILE* inputFile = fopen(arguments[2], "r");
 
@@ -22,16 +47,14 @@ int main(int argumentCount, char* arguments[])
 
         while (fscanf(inputFile, "%99s %99s %99s %99s", nodeFrom, nodeTo, sum, date) == 4) {
             Command command;
-            command.command = 'n';
+            command.command = "n";
             command.param_count = 4;
             command.params = malloc(sizeof(char*) * 4);
-            //bytesCounter += sizeof(char*) * 4;
             command.params[0] = nodeFrom;
             command.params[1] = nodeTo;
             command.params[2] = sum;
             command.params[3] = date;
             handleCommand(&graph,&command);
-            //bytesCounter -= sizeof(char*) * 4;
             free(command.params);
         }
     }
@@ -50,7 +73,7 @@ int main(int argumentCount, char* arguments[])
         command = readCommand();
         handleCommand(&graph, &command);
         freeCommand(command);
-    } while (command.command != 'e');
+    } while (strcmp(command.command, "e") != 0 && strcmp(command.command, "exit") != 0);
 
     // write file
 
@@ -58,7 +81,7 @@ int main(int argumentCount, char* arguments[])
     // and get all the outgoing edge transactions
     // and write all transactions like the input files
     
-    FILE* outputFile = fopen(arguments[4], "w");
+    FILE* outputFile = fopen(outputFileName, "w");
     if(outputFile)
     {
         graphWriteToFile(&graph, outputFile);

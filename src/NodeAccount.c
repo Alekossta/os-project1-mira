@@ -7,11 +7,12 @@ NodeAccount* nodeAccountCreate(char* name)
     NodeAccount* newNode = malloc(sizeof(NodeAccount));
     bytesCounter += sizeof(NodeAccount);
 
-    newNode->name = malloc(strlen(name) + 1);
+    newNode->name = strdup(name);
     bytesCounter += strlen(name) + 1;
-    strcpy(newNode->name, name);
     
     newNode->firstOutEdge = NULL;
+    newNode->firstInEdge = NULL;
+    newNode->nextNode = NULL;
 
     return newNode;
 }
@@ -329,14 +330,4 @@ int newSum, char* oldDate, char* newDate)
         }
         head = head->nextOut;
     }
-}
-
-char* nodeGetName(NodeAccount* node)
-{
-    if(node)
-    {
-        return node->name;
-    }
-    
-    return NULL;
 }

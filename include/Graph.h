@@ -6,7 +6,6 @@
 // each node will have a linked list of edges that indicate its transactions to other accounts
 typedef struct Graph
 {
-    unsigned nodeNum;
     unsigned nodeMax;
     NodeAccount** nodeArray; // an array of pointers to nodes
 } Graph;
@@ -31,7 +30,31 @@ void graphRemoveNode(Graph* graph, char* nodeToRemove);
 // writes contents of graph to file
 void graphWriteToFile(Graph* graph, FILE* file);
 
-void graphFindCircle(Graph* graph, NodeAccount* nodeToFind);
 
 //free
 void graphFree(Graph* graph); 
+
+typedef struct PathNode
+{
+    NodeAccount* nodeAccount;
+    struct PathNode* next;
+} PathNode;
+
+void pathAdd(PathNode** head, NodeAccount* nodeAccount);
+
+// Function to pop a node from the beginning of the path
+void pathPop(PathNode** head);
+
+// Function to print the path
+void pathPrintReverse(PathNode* head);
+
+// Function to free the entire path list
+void freePath(PathNode* head);
+
+// Modified cycleUtil function to store path
+void cycleUtil(Graph* graph, NodeAccount* currentNode, NodeAccount* startingNode, PathNode** path, int minAmount);
+
+// Function to find and return the path of a cycle in the graph
+void graphFindCircle(Graph* graph, NodeAccount* nodeToFind, int minAmount);
+
+void graphFindPath(Graph* graph, NodeAccount* nodeFrom, NodeAccount* nodeTo);

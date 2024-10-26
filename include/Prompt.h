@@ -2,7 +2,7 @@
 
 typedef struct Command
 {
-    char command;
+    char* command;
     char** params;
     int param_count;
 } Command;

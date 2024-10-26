@@ -3,9 +3,11 @@
 #include "Graph.h"
 #include <string.h>
 
+
+
 void handleCommand(Graph* graph, Command* command)
 {
-    if(command->command == 'i')
+    if(strcmp(command->command, "i") == 0 || strcmp(command->command, "insert") == 0)
     {
         for(unsigned i = 0; i < command->param_count; i++)
         {
@@ -13,7 +15,7 @@ void handleCommand(Graph* graph, Command* command)
             graphAddNode(graph, createdNode);
         }
     }
-    else if(command->command == 'n')
+    else if(strcmp(command->command, "n") == 0 || strcmp(command->command, "insert2") == 0)
     {
         char* nodeFromName = command->params[0];
         char* nodeToName = command->params[1];
@@ -41,14 +43,14 @@ void handleCommand(Graph* graph, Command* command)
         nodeAccountAddOutEdge(nodeFrom, newEdge);
         nodeAccountAddInEdge(nodeTo, newEdge);
     }
-    else if(command->command == 'd')
+    else if(strcmp(command->command, "d") == 0 || strcmp(command->command, "delete") == 0)
     {
         for(unsigned i = 0; i < command->param_count; i++)
         {
             graphRemoveNode(graph, command->params[i]);
         }
     }
-    else if(command->command == 'l')
+    else if(strcmp(command->command, "l") == 0 || strcmp(command->command, "delete2") == 0)
     {
         char* nodeFromName = command->params[0];
         char* nodeToName = command->params[1];
@@ -65,7 +67,7 @@ void handleCommand(Graph* graph, Command* command)
             printf("The nodes you provided do not exist\n");
         }
     }
-    else if (command->command == 'm')
+    else if (strcmp(command->command, "m") == 0 || strcmp(command->command, "modify") == 0)
     {
         char* nodeFromName = command->params[0];
         char* nodeToName = command->params[1];
@@ -84,7 +86,7 @@ void handleCommand(Graph* graph, Command* command)
             nodeAccountFindAndModifyEdgeWithNode(nodeFrom,nodeTo, oldSum, newSum, oldDate, newDate);
         }        
     }
-    else if(command->command == 'f')
+    else if(strcmp(command->command, "f") == 0 || strcmp(command->command, "find") == 0)
     {
         char* nodeNameToLook = command->params[0];
         NodeAccount* nodeToLook = graphFindNode(graph, nodeNameToLook);
@@ -97,7 +99,7 @@ void handleCommand(Graph* graph, Command* command)
             printf("This node does not exist\n");
         }
     }
-    else if(command->command == 'r')
+    else if(strcmp(command->command, "r") == 0 || strcmp(command->command, "receiving") == 0)
     {
         char* nodeNameToLook = command->params[0];
         NodeAccount* nodeToLook = graphFindNode(graph, nodeNameToLook);
@@ -110,20 +112,51 @@ void handleCommand(Graph* graph, Command* command)
             printf("This node does not exist\n");
         }       
     }
-    else if(command->command == 'c')
+    else if(strcmp(command->command, "c") == 0 || strcmp(command->command, "circleFind") == 0)
     {
         char* nodeName = command->params[0];
         NodeAccount* nodeToLook = graphFindNode(graph, nodeName);
         if(nodeToLook)
         {
-            graphFindCircle(graph, nodeToLook);
+            graphFindCircle(graph, nodeToLook, -1);
         }
         else
         {
             printf("This node does not exist\n");
         }
     }
-    else if(command->command == 'p')
+    else if(strcmp(command->command, "fi") == 0 || strcmp(command->command, "findcircles") == 0)
+    {
+        char* nodeName = command->params[0];
+        int minAmount = atoi(command->params[1]);
+        NodeAccount* nodeToLook = graphFindNode(graph, nodeName);
+        if(nodeToLook)
+        {
+            graphFindCircle(graph, nodeToLook, minAmount);
+        }
+        else
+        {
+            printf("This node does not exitst\n");
+        }
+    }
+    else if(strcmp(command->command, "o") == 0 || strcmp(command->command, "connected") == 0)
+    {
+        char* nodeFromName = command->params[0];
+        char* nodeToName = command->params[1];
+
+        NodeAccount* nodeFrom = graphFindNode(graph, nodeFromName);
+        NodeAccount* nodeTo = graphFindNode(graph, nodeToName);
+
+        if(nodeFrom && nodeTo)
+        {
+            graphFindPath(graph, nodeFrom, nodeTo);
+        }
+        else
+        {
+            printf("You didnt provide valid node names");
+        }
+    }
+    else if(strcmp(command->command, "p") == 0 || strcmp(command->command, "print") == 0)
     {
         graphPrint(graph);
     }

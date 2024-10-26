@@ -6,10 +6,8 @@
 Graph graphCreate(unsigned nodeMax)
 {
     Graph newGraph;
-    printf("%d ending nodeMax", nodeMax);
     newGraph.nodeArray = malloc(sizeof(NodeAccount*) * nodeMax);
     bytesCounter += sizeof(NodeAccount*) * nodeMax;
-    newGraph.nodeNum = 0;
     newGraph.nodeMax = nodeMax;
     return newGraph;
 }
@@ -42,7 +40,7 @@ void graphPrint(Graph* graph)
             NodeAccount* head = graph->nodeArray[i];
             while(head != NULL)
             {
-                nodeAccountPrint(graph->nodeArray[i]);
+                nodeAccountPrint(head);
                 head = head->nextNode;
             }
         }
@@ -132,52 +130,137 @@ void graphWriteToFile(Graph* graph, FILE* file)
     }
 }
 
-int cycleUtil(Graph* graph, NodeAccount* node)
+void pathAdd(PathNode** head, NodeAccount* nodeAccount) {
+    PathNode* newPathNode = (PathNode*)malloc(sizeof(PathNode));
+    newPathNode->nodeAccount = nodeAccount;
+    newPathNode->next = *head;
+    *head = newPathNode;
+}
+
+void pathPop(PathNode** head) {
+    if (*head != NULL) {
+        PathNode* temp = *head;
+        *head = (*head)->next;
+        free(temp);
+    }
+}
+
+void pathPrintReverse(PathNode* head) {
+    int count = 0;
+    PathNode* temp = head;
+    while (temp != NULL) {
+        count++;
+        temp = temp->next;
+    }
+
+    NodeAccount** nodes = (NodeAccount**)malloc(sizeof(NodeAccount*) * count);
+    temp = head;
+    for (int i = count - 1; i >= 0; i--) {
+        nodes[i] = temp->nodeAccount;
+        temp = temp->next;
+    }
+
+    for (int i = 0; i < count; i++) {
+        printf("%s ", nodes[i]->name);
+        if (i < count - 1) {
+            printf("-> ");
+        }
+    }
+    printf("\n");
+
+    free(nodes);
+}
+
+void freePath(PathNode* head) {
+    while (head != NULL) {
+        PathNode* temp = head;
+        head = head->next;
+        free(temp);
+    }
+}
+
+void cycleUtil(Graph* graph, NodeAccount* currentNode, NodeAccount* startingNode, PathNode** path, int minAmount) {
+    currentNode->visited = 1;
+    pathAdd(path, currentNode);
+
+    EdgeTransaction* edge = currentNode->firstOutEdge;
+    while (edge != NULL) {
+        if(edge->amount >= minAmount)
+        {
+            NodeAccount* neighbor = edge->destination;
+            if (neighbor == startingNode) {
+                printf("Cycle: ");
+                pathPrintReverse(*path);
+                printf("-> %s\n", startingNode->name);
+            } else if (!neighbor->visited) {
+                cycleUtil(graph, neighbor, startingNode, path, minAmount);
+            }
+        }
+
+        edge = edge->nextOut;
+    }
+
+    currentNode->visited = 0;
+    pathPop(path);
+}
+
+void graphFindCircle(Graph* graph, NodeAccount* nodeToFind, int minAmount) {
+    for (unsigned i = 0; i < graph->nodeMax; i++) {
+        NodeAccount* node = graph->nodeArray[i];
+        while (node != NULL) {
+            node->visited = 0;
+            node = node->nextNode;
+        }
+    }
+
+    PathNode* path = NULL;
+    cycleUtil(graph, nodeToFind, nodeToFind, &path, minAmount);
+    freePath(path);
+}
+
+// here visited means is in path to avoid looking in the path linked list
+int graphFindPathUtil(Graph* graph, NodeAccount* startingNode, NodeAccount* goalNode, PathNode** path)
 {
-    EdgeTransaction* head = node->firstOutEdge;
-    while(head != NULL)
+    startingNode->visited = 1;
+    pathAdd(path, startingNode);
+
+    if(startingNode == goalNode)
+    {
+        pathPrintReverse(*path);
+        return 1;
+    }
+
+    EdgeTransaction* head = startingNode->firstOutEdge;
+    while(head)
     {
         NodeAccount* neighbor = head->destination;
         if(neighbor->visited == 0)
         {
-            if(cycleUtil(graph,neighbor) == 1)
-            {
+            if(graphFindPathUtil(graph,neighbor, goalNode, path))
                 return 1;
-            }
         }
-        else if(neighbor->stack == 1)
-        {
-            return 1;
-        }
-
-
         head = head->nextOut;
     }
 
-    node->stack = 0;
+    startingNode->visited = 0;
+    pathPop(path);
     return 0;
 }
 
-void graphFindCircle(Graph* graph, NodeAccount* nodeToFind)
+void graphFindPath(Graph* graph, NodeAccount* nodeFrom, NodeAccount* nodeTo)
 {
-    // set every node to unvisited from other searches
-    for(unsigned i = 0; i < graph->nodeMax; i++)
-    {
-        if(graph->nodeArray[i] != NULL)
-        {
-
-            NodeAccount* head = graph->nodeArray[i];
-            while(head != NULL)
-            {
-                head->visited = 0;
-                head->stack = 0;
-                head = head->nextNode;
-            }
+    for (unsigned i = 0; i < graph->nodeMax; i++) {
+        NodeAccount* node = graph->nodeArray[i];
+        while (node != NULL) {
+            node->visited = 0;
+            node = node->nextNode;
         }
     }
-
-    int cycleResult = cycleUtil(graph,nodeToFind);
-    printf("Cycle result: %d", cycleResult);
+    PathNode* path = NULL;
+    if(!graphFindPathUtil(graph, nodeFrom, nodeTo, &path))
+    {
+        printf("did not found path\n");
+    }
 }
 
 void graphFree(Graph* graph)
