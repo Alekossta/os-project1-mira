@@ -3,8 +3,6 @@
 #include "Graph.h"
 #include <string.h>
 
-
-
 void handleCommand(Graph* graph, Command* command)
 {
     if(strcmp(command->command, "i") == 0 || strcmp(command->command, "insert") == 0)
@@ -12,7 +10,16 @@ void handleCommand(Graph* graph, Command* command)
         for(unsigned i = 0; i < command->param_count; i++)
         {
             NodeAccount* createdNode = nodeAccountCreate(command->params[i]);
-            graphAddNode(graph, createdNode);
+            if(createdNode)
+            {
+                printf("Succ: %s", command->params[i]);
+                graphAddNode(graph, createdNode);
+            }
+            else
+            {
+                printf("IssueWith: %s", command->params[i]);
+                return;
+            }
         }
     }
     else if(strcmp(command->command, "n") == 0 || strcmp(command->command, "insert2") == 0)
@@ -31,11 +38,23 @@ void handleCommand(Graph* graph, Command* command)
             graphAddNode(graph, nodeFrom);
         }
 
+        if(!nodeFrom)
+        {
+            printf("Issue with: %s\n", nodeFromName);
+            return;
+        }
+
         NodeAccount* nodeTo  = graphFindNode(graph, nodeToName);
         if(!nodeTo)
         {
             nodeTo = nodeAccountCreate(nodeToName);
             graphAddNode(graph, nodeTo);
+        }
+
+        if(!nodeTo)
+        {
+            printf("Issue with: %s\n", nodeToName);
+            return;
         }
 
         EdgeTransaction* newEdge = edgeTransactionCreate(amount, date, nodeFrom, nodeTo);
@@ -47,7 +66,11 @@ void handleCommand(Graph* graph, Command* command)
     {
         for(unsigned i = 0; i < command->param_count; i++)
         {
-            graphRemoveNode(graph, command->params[i]);
+            int result = graphRemoveNode(graph, command->params[i]);
+            if(result == 0)
+            {
+                printf("Non-existing node: %s\n", command->params[i]);
+            }
         }
     }
     else if(strcmp(command->command, "l") == 0 || strcmp(command->command, "delete2") == 0)
@@ -56,7 +79,18 @@ void handleCommand(Graph* graph, Command* command)
         char* nodeToName = command->params[1];
 
         NodeAccount* nodeFrom = graphFindNode(graph, nodeFromName);
+        if(!nodeFrom)
+        {
+            printf("Non-existing node: %s", nodeFromName);
+            return;
+        }
+        
         NodeAccount* nodeTo  = graphFindNode(graph, nodeToName);
+        if(!nodeTo)
+        {
+            printf("Non-existing node: %s", nodeToName);
+            return;
+        }
 
         if(nodeFrom && nodeTo)
         {
@@ -79,12 +113,23 @@ void handleCommand(Graph* graph, Command* command)
         char* newDate = command->params[5];
 
         NodeAccount* nodeFrom = graphFindNode(graph, nodeFromName);
-        NodeAccount* nodeTo  = graphFindNode(graph, nodeToName);
-
-        if(nodeFrom && nodeTo)
+        if(!nodeFrom)
         {
-            nodeAccountFindAndModifyEdgeWithNode(nodeFrom,nodeTo, oldSum, newSum, oldDate, newDate);
-        }        
+            printf("Non-existing node: %s\n", nodeFromName);
+            return;
+        }
+        NodeAccount* nodeTo  = graphFindNode(graph, nodeToName);
+        if(!nodeTo)
+        {
+            printf("Non-existing node: %s\n", nodeToName);
+            return;
+        }
+
+        int result = nodeAccountFindAndModifyEdgeWithNode(nodeFrom,nodeTo, oldSum, newSum, oldDate, newDate);
+        if(result == 0)
+        {
+            printf("Non-existing edge: %s %s %d %s\n", nodeFromName, nodeToName, oldSum, oldDate);
+        }  
     }
     else if(strcmp(command->command, "f") == 0 || strcmp(command->command, "find") == 0)
     {
@@ -96,7 +141,7 @@ void handleCommand(Graph* graph, Command* command)
         }
         else
         {
-            printf("This node does not exist\n");
+            printf("Non-existing node: %s\n", nodeNameToLook);
         }
     }
     else if(strcmp(command->command, "r") == 0 || strcmp(command->command, "receiving") == 0)
@@ -109,7 +154,7 @@ void handleCommand(Graph* graph, Command* command)
         }
         else
         {
-            printf("This node does not exist\n");
+            printf("Non-existing node: %s\n", nodeNameToLook);
         }       
     }
     else if(strcmp(command->command, "c") == 0 || strcmp(command->command, "circleFind") == 0)
@@ -122,7 +167,7 @@ void handleCommand(Graph* graph, Command* command)
         }
         else
         {
-            printf("This node does not exist\n");
+            printf("Non-existing node: %s\n", nodeName);
         }
     }
     else if(strcmp(command->command, "fi") == 0 || strcmp(command->command, "findcircles") == 0)
@@ -136,8 +181,20 @@ void handleCommand(Graph* graph, Command* command)
         }
         else
         {
-            printf("This node does not exitst\n");
+            printf("Non-existing node: %s\n", nodeName);
         }
+    }
+    else if(strcmp(command->command, "t") == 0 || strcmp(command->command, "traceflow") == 0)
+    {
+        char* nodeName = command->params[0];
+        int length = atoi(command->params[1]);
+        NodeAccount* nodeToLook = graphFindNode(graph, nodeName);
+        if(!nodeToLook)
+        {
+            printf("Non-existing node: %s\n", nodeName);
+        }
+
+        graphFindTraceflow(graph, nodeToLook, length);
     }
     else if(strcmp(command->command, "o") == 0 || strcmp(command->command, "connected") == 0)
     {
@@ -145,7 +202,18 @@ void handleCommand(Graph* graph, Command* command)
         char* nodeToName = command->params[1];
 
         NodeAccount* nodeFrom = graphFindNode(graph, nodeFromName);
-        NodeAccount* nodeTo = graphFindNode(graph, nodeToName);
+        if(!nodeFrom)
+        {
+            printf("Non-existing node: %s", nodeFromName);
+            return;
+        }
+        
+        NodeAccount* nodeTo  = graphFindNode(graph, nodeToName);
+        if(!nodeTo)
+        {
+            printf("Non-existing node: %s", nodeToName);
+            return;
+        }
 
         if(nodeFrom && nodeTo)
         {
@@ -159,5 +227,9 @@ void handleCommand(Graph* graph, Command* command)
     else if(strcmp(command->command, "p") == 0 || strcmp(command->command, "print") == 0)
     {
         graphPrint(graph);
+    }
+    else
+    {
+        printf("Unrecognized command\n");
     }
 }

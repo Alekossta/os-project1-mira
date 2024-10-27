@@ -95,7 +95,7 @@ int main(int argumentCount, char* arguments[])
 
     graphFree(&graph);
 
-    printf("Bytes used: %zu\n", bytesCounter);
+    printf("%zu Bytes released\n", bytesCounter);
     
     return 0;
 }

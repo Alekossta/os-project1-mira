@@ -34,7 +34,7 @@ void edgeTransactionPrint(EdgeTransaction* edgeTransaction)
         char* fromName = edgeTransaction->owner->name;
         char* toName = edgeTransaction->destination->name;
 
-        printf("Transaction from %s to %s of amount %d at %s\n", fromName, toName,
+        printf("%s %s %d %s\n", fromName, toName,
          edgeTransaction->amount, edgeTransaction->date);    
     }
 }

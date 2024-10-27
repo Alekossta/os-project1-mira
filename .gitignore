@@ -4,3 +4,4 @@ obj
 .config/
 .vscode/
 .vscode-server/
+.vscode

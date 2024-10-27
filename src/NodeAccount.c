@@ -27,7 +27,7 @@ void nodeAccountFree(NodeAccount* node)
 
 void nodeAccountPrint(NodeAccount* node)
 {
-    printf("###%s\n", node->name);
+    printf("#%s\n", node->name);
 
     nodeAccountPrintInEdges(node);
     nodeAccountPrintOutEdges(node);
@@ -35,7 +35,6 @@ void nodeAccountPrint(NodeAccount* node)
 
 void nodeAccountPrintInEdges(NodeAccount* node)
 {
-    printf("##%s ingoing transactions\n", node->name);
     EdgeTransaction* headIn = node->firstInEdge;
     while (headIn != NULL)
     {
@@ -45,7 +44,6 @@ void nodeAccountPrintInEdges(NodeAccount* node)
 }
 void nodeAccountPrintOutEdges(NodeAccount* node)
 {
-    printf("##%s outgoing transactions\n", node->name);
     EdgeTransaction* headOut = node->firstOutEdge;
     while (headOut != NULL)
     {
@@ -122,54 +120,8 @@ void nodeAccountRemoveAllInEdges(NodeAccount* node)
 
 void nodeAccountRemoveEdgeWithOtherNode(NodeAccount* node1, NodeAccount* node2)
 {
-
-    // we will search in node1 edges in/out
-    // then just remove it also from node2
-
-
-    // in edges
     EdgeTransaction* head = node1->firstInEdge;
     EdgeTransaction* previous = NULL;
-    while(head != NULL)
-    {
-        if(strcmp(head->destination->name, node2->name) == 0)
-        {
-            // free will happen in node2
-            if(previous == NULL)
-            {
-                if(head->nextIn != NULL)
-                {
-                    node1->firstInEdge = head->nextIn;
-                }
-                else
-                {
-                    node1->firstInEdge = NULL;
-                }
-                
-                head->destination = NULL;
-                if(head->owner != NULL)
-                {
-                    nodeAccountRemoveOutEdge(node2, head);
-                }
-            }
-            else
-            {
-                previous->nextIn = head->nextIn;
-                head->destination = NULL;
-                if(head->owner != NULL)
-                {
-                    nodeAccountRemoveOutEdge(node2, head);
-                }
-            }
-
-            return;
-        }
-
-        previous = head;
-        head = head->nextIn;
-    }
-
-    // out edges
     head = node1->firstOutEdge;
     previous = NULL;
     while(head != NULL)
@@ -314,7 +266,7 @@ void nodeAccountRemoveInEdge(NodeAccount* node, EdgeTransaction* edgeTransaction
     }
 }
 
-void nodeAccountFindAndModifyEdgeWithNode(NodeAccount* fromNode, NodeAccount* toNode, int oldSum,
+int nodeAccountFindAndModifyEdgeWithNode(NodeAccount* fromNode, NodeAccount* toNode, int oldSum,
 int newSum, char* oldDate, char* newDate)
 {
     EdgeTransaction* head = fromNode->firstOutEdge;
@@ -327,7 +279,10 @@ int newSum, char* oldDate, char* newDate)
             free(head->date);
             head->date = strdup(newDate);
             bytesCounter += strlen(newDate) + 1; // strdup uses malloc
+            return 1;
         }
         head = head->nextOut;
     }
+
+    return 0;
 }

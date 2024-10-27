@@ -78,7 +78,7 @@ NodeAccount* graphFindNode(Graph* graph, char* nodeName)
     return NULL;
 }
 
-void graphRemoveNode(Graph* graph, char* nodeToRemove)
+int graphRemoveNode(Graph* graph, char* nodeToRemove)
 {
     unsigned hashIndex = graphHash(graph, nodeToRemove);
     NodeAccount* currentNode =  graph->nodeArray[hashIndex];
@@ -99,12 +99,14 @@ void graphRemoveNode(Graph* graph, char* nodeToRemove)
             nodeAccountRemoveAllInEdges(currentNode);
             nodeAccountRemoveAllOutEdges(currentNode);
             nodeAccountFree(currentNode);
-            return;
+            return 1;
         }
 
         previousNode = currentNode;
         currentNode = currentNode->nextNode;
     }
+
+    return 0; // did not find node
 }
 
 void graphWriteToFile(Graph* graph, FILE* file)
@@ -163,10 +165,9 @@ void pathPrintReverse(PathNode* head) {
     for (int i = 0; i < count; i++) {
         printf("%s ", nodes[i]->name);
         if (i < count - 1) {
-            printf("-> ");
+            printf(", ");
         }
     }
-    printf("\n");
 
     free(nodes);
 }
@@ -191,7 +192,7 @@ void cycleUtil(Graph* graph, NodeAccount* currentNode, NodeAccount* startingNode
             if (neighbor == startingNode) {
                 printf("Cycle: ");
                 pathPrintReverse(*path);
-                printf("-> %s\n", startingNode->name);
+                printf(", %s\n", startingNode->name);
             } else if (!neighbor->visited) {
                 cycleUtil(graph, neighbor, startingNode, path, minAmount);
             }
@@ -261,6 +262,32 @@ void graphFindPath(Graph* graph, NodeAccount* nodeFrom, NodeAccount* nodeTo)
     {
         printf("did not found path\n");
     }
+}
+
+void graphFindTraceflowUtil(Graph* graph, NodeAccount* nodeStart, int length, PathNode** path, int currentLength)
+{
+    if(currentLength == length + 1)
+    {
+        pathPrintReverse(*path);
+        printf("\n");
+        return;
+    }
+
+    EdgeTransaction* head = nodeStart->firstOutEdge;
+    while(head != NULL)
+    {
+        pathAdd(path, head->destination);
+        graphFindTraceflowUtil(graph, head->destination, length, path, currentLength + 1);
+        pathPop(path);
+        head = head->nextOut;
+    }
+}
+
+void graphFindTraceflow(Graph* graph, NodeAccount* nodeStart, int length)
+{
+    PathNode* path = NULL;
+    pathAdd(&path, nodeStart);
+    graphFindTraceflowUtil(graph,nodeStart, length, &path, 1);
 }
 
 void graphFree(Graph* graph)
